@@ -1,0 +1,92 @@
+---
+const { imageUrl, spotifyEmbed, description, content } = Astro.props;
+
+// Dynamically adjust Spotify iframe height
+const spotifyHeight = spotifyEmbed && spotifyEmbed.includes("track") ? 150 : 352;
+const spotifyMarginClass = spotifyHeight === 150 ? "spotify-margin-small" : "spotify-margin-large";
+---
+
+<div class="post-container">
+  <hr class="post-divider" />
+  <!-- Conditional Rendering -->
+  {imageUrl && (
+    <img 
+      src={imageUrl} 
+      alt="Post" 
+      class="post-image" 
+    />
+  )}
+  {spotifyEmbed && (
+    <div class={`spotify-container ${spotifyMarginClass}`}>
+      <iframe 
+        src={spotifyEmbed.match(/src="([^"]+)"/)?.[1] || ""} 
+        width="100%" 
+        height={spotifyHeight} 
+        frameborder="0" 
+        allowtransparency="true" 
+        allow="encrypted-media"
+        class="spotify-embed"
+      ></iframe>
+    </div>
+  )}
+  {!imageUrl && !spotifyEmbed && (
+    <p class="post-content">
+      {content}
+    </p>
+  )}
+  <p class="post-description">
+    {description}
+  </p>
+</div>
+
+<style>
+  .post-container {
+    background-color: white;
+    padding: 1rem;
+  }
+  .post-divider {
+    border: none;
+    border-top: 1px solid #e6e6e6;
+    margin-bottom: 1rem; /* Add spacing below the divider */
+  }
+  .post-image {
+    width: 100%;
+    height: auto;
+    margin-bottom: -0.5rem;
+  }
+  .spotify-container {
+    width: 100%;
+  }
+
+  /* Spotify margin styles */
+  .spotify-margin-small {
+    margin-bottom: -4.5rem; /* Margin for height 150 */
+  }
+
+  .spotify-margin-large {
+    margin-bottom: 1rem; /* Margin for height 352 */
+  }
+
+  .spotify-embed {
+    width: 100%;
+    display: block;
+  }
+  .post-content {
+    font-family: 'CMU Serif', serif;
+    font-size: 1.5rem;
+    color: black;
+    word-wrap: break-word; /* Ensure long words wrap */
+    overflow-wrap: break-word; /* Ensure text wrapping for long words */
+    font-weight: 400;
+    margin-bottom: -0.5rem;
+  }
+  .post-description {
+    font-family: 'CMU Serif', serif;
+    font-size: 1rem;
+    color: black;
+    text-align: left;
+    word-wrap: break-word; /* Ensure long words wrap */
+    overflow-wrap: break-word; /* Ensure text wrapping for long words */
+	margin-bottom: -0.5rem;
+  }
+</style>

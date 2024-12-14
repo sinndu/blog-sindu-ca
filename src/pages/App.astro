@@ -1,0 +1,76 @@
+---
+import Post from "../components/Post.astro";
+
+// Define the expected structure for imported Markdown files
+interface MarkdownFile {
+  frontmatter: {
+    title: string;
+    description: string;
+    imageUrl: string;
+    spotifyEmbed: string,
+    content: string,
+  };
+}
+
+// Dynamically import all Markdown files from the `src/posts` directory
+const postImports = import.meta.glob<MarkdownFile>("../posts/*.md", { eager: true });
+
+const postData = Object.entries(postImports).map(([path, post]) => ({
+  slug: path.split("/").pop()?.replace(".md", "") || "unknown",
+  ...post.frontmatter,
+})).reverse();
+---
+
+<html>
+  <head>
+    <title>App</title>
+    <style>
+      body {
+        background-color: white;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+      }
+
+      h1 {
+        font-family: 'CMU Serif', serif;
+        font-size: 1.875rem; /* 3xl */
+        color: black;
+        font-weight: 500; /* Remove bold styling */
+        margin-top: 1.5rem; /* Default margin-top */
+        margin-bottom: 0rem; /* Reduce space between title and content */
+      }
+
+      .container {
+        width: 100%;
+        max-width: 27rem; /* Default max-width */
+        padding: 0rem; /* No padding */
+      }
+
+      @media screen and (max-width: 768px){
+        h1 {
+          margin-top: 3rem; /* Increase margin-top for the header on iOS */
+        }
+
+        .container {
+          max-width: 24rem; /* Reduce max-width for iOS */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pjmk,lp</h1>
+    <div class="container">
+      {postData.map((post) => (
+        <Post 
+          imageUrl={post.imageUrl} 
+          content={post.content} 
+          description={post.description} 
+          spotifyEmbed={post.spotifyEmbed} 
+        />
+      ))}
+    </div>
+  </body>
+</html>
